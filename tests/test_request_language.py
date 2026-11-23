@@ -103,7 +103,7 @@ def test_fetch_is_answered_whatever_the_language(skill):
     """A fetch is addressed to this provider by skill_id and the plugin
     waits for its reply - it is never gated on language."""
     skill.index = INDEX
-    skill.get_story_paragraphs = lambda entry: ["Once upon a time."]
+    skill._get_story_record = lambda entry: {"paragraphs": ["Once upon a time."]}
     skill.handle_fetch_content(request(
         f"ovos.common_reading.fetch_content.{skill.skill_id}",
         {"content_id": "Cinderella, Or The Little Glass Slipper", "lang": "fr-fr"}, "fr-FR"))
