@@ -112,11 +112,14 @@ def test_handle_fetch_content_success(skill):
     skill.index = _sample_index()
     skill.get_story_paragraphs = MagicMock(return_value=["Once upon a time.", "The end."])
 
-    skill.handle_fetch_content(make_message({"content_id": "Cinderella, Or The Little Glass Slipper"}))
+    skill.handle_fetch_content(make_message({"include_source": True, "content_id": "Cinderella, Or The Little Glass Slipper"}))
 
     sent = skill.bus.emit.call_args[0][0]
     assert sent.msg_type == COMMON_READING_FETCH_CONTENT_RESPONSE
     assert sent.data["paragraphs"] == ["Once upon a time.", "The end."]
+    entry = skill.index["Cinderella, Or The Little Glass Slipper"]
+    assert sent.data["source"]["url"] == f"{entry['url']}#{entry['anchor']}"
+    assert sent.data["source"]["title"] == "Cinderella, Or The Little Glass Slipper"
 
 
 def test_handle_fetch_content_unknown_id_returns_empty(skill):
